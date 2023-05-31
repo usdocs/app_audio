@@ -62,7 +62,8 @@ class AudiorecordCreate(generics.CreateAPIView):
 @api_view(['GET'])
 def download_record(request):
     """Проверяет get параметры и отдает файл на скачивание"""
-    if 'id' and 'user' not in request.GET:
+    if (len(request.GET) != 2 or 'id' not in request.GET
+            or 'user' not in request.GET):
         return Response(
             {'Неверные параметры для скачивания'},
             status=status.HTTP_400_BAD_REQUEST
