@@ -4,9 +4,7 @@
 
 Данный веб-сервис, выполняет следующие функции:
 - Создание пользователя;
-- Для каждого пользователя - сохраняет аудиозапись в формате wav, преобразует её в формат mp3 и записывает в базу данных, далее предоставляет ссылку для скачивания аудиозаписи.
-
-
+- Для каждого пользователя - получает аудиозапись в формате wav, преобразует её в формат mp3 и записывает в базу данных, далее предоставляет ссылку для скачивания аудиозаписи.
 
 ## Установка и запуск
 Клонируйте репозиторий и перейдите в директорию с docker-compose
@@ -41,6 +39,7 @@ docker-compose exec web python manage.py collectstatic --no-input
 - Docker-compose
 - PostgreSQL
 - GIT
+- ffmpeg
 
 ## Шаблон наполнения .env
 ```
@@ -58,6 +57,8 @@ DB_HOST=
 DB_PORT=
 # секретный ключ Django
 SECRET_KEY=
+# Адрес хоста для создания ссылки для скачивания
+LOCAL_HOST=
 ```
 
 **Пример POST-запроса:**
@@ -66,7 +67,7 @@ SECRET_KEY=
   <br>
   URL: `http://127.0.0.1:8000/api/v1/signup/`
   <br>
-  Request body: `{username: user}`
+  Request body: `{"username": "user"}`
   <br>
   Response:
     `"token": "ff82a09a1fe7efd1ff7c87a2abac82406e2af0f2",
@@ -82,15 +83,11 @@ SECRET_KEY=
   Request file: аудиофайл в формате .wav
   <br>
   Response:
-    `"token": "ff82a09a1fe7efd1ff7c87a2abac82406e2af0f2",
-    "uuid": "19fad36a-1435-470d-8755-aafeff2c0164"`
+    `{"http://127.0.0.1:8000/api/record/?id=720f91d9-8e25-44a3-863a-8de2dc63e8b8&user=19fad36a-1435-470d-8755-aafeff2c0164"}`
 
 - Доступ к аудиозаписи:
   <br>
-  URL: `http://127.0.0.1:8000/api/v1/audiorecord/`
-  <br>
-  Request body: `{username: user}`
+  URL: `http://127.0.0.1:8000/api/record/?id=720f91d9-8e25-44a3-863a-8de2dc63e8b8&user=19fad36a-1435-470d-8755-aafeff2c0164`
   <br>
   Response:
-    `"token": "ff82a09a1fe7efd1ff7c87a2abac82406e2af0f2",
-    "uuid": "19fad36a-1435-470d-8755-aafeff2c0164"`
+    `Скачивание файла`
