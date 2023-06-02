@@ -11,6 +11,5 @@ def convert_audio(record):
     random_name = ''.join(random.choice(string.ascii_lowercase)
                           for i in range(7))
     file_name = f'{name}_{random_name}.mp3'
-    print(file_name)
     AudioSegment.from_wav(record).export(f'media/{file_name}', format='mp3')
     return file_name
