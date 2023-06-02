@@ -31,8 +31,8 @@ def signup(request):
 
 
 class AudiorecordCreate(generics.CreateAPIView):
-    """Создает запись в БД с аудиофайлом, конвертирует его и отдает
-       ссылку на скачивание"""
+    """Конвертирует аудиофайл из формата .wav в формат .mp3, создает запись в
+        БД с mp3 аудиофайлом и отдает ссылку на его скачивание"""
     queryset = Audiorecord.objects.all()
     serializer_class = AudiorecordSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -48,12 +48,11 @@ class AudiorecordCreate(generics.CreateAPIView):
                 {f'Ошибка в UUID автора: {error}'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        serializer.save(author=user)
-
+        record_mp3 = convert_audio(request.data['audio'])
+        serializer.save(author=user, audio=record_mp3)
         id_record = serializer.data['id']
-        convert_audio(id_record)
 
-        host = os.getenv('LOCAL_HOST')
+        host = os.getenv('LOCAL_HOST', default='http://127.0.0.1:8000')
         url = host + reverse_lazy('api:record')
         response = {f'{url}?id={id_record}&user={id_user}'}
         return Response(response, status=status.HTTP_201_CREATED)
@@ -88,5 +87,4 @@ def download_record(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    audio = record.audio
-    return FileResponse(audio, as_attachment=True)
+    return FileResponse(record.audio, as_attachment=True)

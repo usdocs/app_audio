@@ -1,27 +1,16 @@
 import os
-from django.conf import settings
-from django.core.files.base import ContentFile
-from rest_framework import status
-from rest_framework.response import Response
+import random
+import string
 
 from pydub import AudioSegment
 
-from audiorecords.models import Audiorecord
 
-
-def convert_audio(id_record):
-    try:
-        audiorecord = Audiorecord.objects.get(id=id_record)
-    except Exception as error:
-        return Response(
-            {f'Ошибка в UUID записи: {error}'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    filename = str(audiorecord.audio)
+def convert_audio(record):
+    filename = str(record)
     name = os.path.splitext(filename)[0]
-    filepath = os.path.join(settings.MEDIA_ROOT, filename)
-    record = AudioSegment.from_wav(filepath)
-    record_mp3 = record.export(f'media/{name}.mp3', format='mp3')
-    print(record_mp3)
-    audiorecord.audio.save(f'{name}.mp3', ContentFile(record_mp3.read()))
+    random_name = ''.join(random.choice(string.ascii_lowercase)
+                          for i in range(7))
+    file_name = f'{name}_{random_name}.mp3'
+    print(file_name)
+    AudioSegment.from_wav(record).export(f'media/{file_name}', format='mp3')
+    return file_name
