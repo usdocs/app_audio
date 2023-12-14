@@ -1,5 +1,6 @@
-from api.views import AudiorecordCreate, download_record, signup
 from django.urls import path
+
+from api.views import AudiorecordCreate, download_record, signup
 
 urlpatterns = [
     path('v1/signup/', signup),

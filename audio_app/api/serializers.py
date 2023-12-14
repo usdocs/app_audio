@@ -1,5 +1,6 @@
-from audiorecords.models import Audiorecord
 from rest_framework import serializers
+
+from audiorecords.models import Audiorecord
 from users.models import User
 
 

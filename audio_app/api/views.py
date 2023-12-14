@@ -1,13 +1,12 @@
 import os
 
+from dotenv import load_dotenv
 from django.http import FileResponse
 from django.urls import reverse_lazy
 from rest_framework import generics, permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-from dotenv import load_dotenv
 
 from api.include.convert_audio import convert_audio
 from api.serializers import AudiorecordSerializer, SignUpSerializer
